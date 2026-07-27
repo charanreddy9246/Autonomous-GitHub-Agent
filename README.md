@@ -4,7 +4,7 @@ An autonomous GitHub automation agent built to solve a specific engineering chal
 
 Instead of hardcoding hundreds of GitHub API endpoints, this system starts with just 4 basic tools. When an instruction requires something new (like classifying issue priority or generating triage summaries), it dynamically writes Python code for the missing tool, sandbox-tests it against the live repository in an isolated subprocess, and permanently stores the validated tool in SQLite memory.
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the detailed engineering rationale and [DEMO.md](DEMO.md) for the walkthrough script.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the detailed engineering rationale, system design, and live API debugging notes.
 
 ## Setup
 
