@@ -1,4 +1,4 @@
-# Architecture
+# System Architecture & Live Debugging Log
 
 ## 1. What does the memory system store, and why is it structured this way?
 
