@@ -7,7 +7,8 @@ the available tools, and feeds both into the planning prompt. This is
 the mechanism behind the "agent does something different on run N"
 requirement: a repeated instruction pattern arrives with its known
 pitfalls already pre-empted, so the plan is correct on the first attempt
-instead of needing a failed call + a replan.
+instead of needing a failed call + a replan. Uses cosine similarity
+threshold of 0.75 for execution matching.
 """
 import json
 import os
