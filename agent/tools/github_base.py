@@ -1,10 +1,3 @@
-"""Deliberately small, hardcoded set of GitHub operations.
-
-Anything not listed here (labeling by inferred priority, weekly triage
-summaries, bulk operations, closing stale issues, etc.) is intentionally
-absent -- those gaps are what the capability-synthesis pipeline has to
-fill at runtime. See agent/synthesis/synthesizer.py.
-"""
 from agent.github_client import GitHubClient
 
 TOOL_SPECS = {

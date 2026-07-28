@@ -1,13 +1,3 @@
-"""Capability synthesis: when the planner hits an operation with no
-matching tool, this module reasons about what the tool needs to do,
-generates a Python implementation, tests it for real against the
-configured GitHub repo in a subprocess sandbox, and -- only if the test
-passes -- persists it into capability memory for reuse by future runs.
-
-This happens at runtime (triggered by an actual planning gap), not at
-design time (there is no pre-written implementation for these
-operations anywhere in the codebase).
-"""
 import json
 import os
 import re

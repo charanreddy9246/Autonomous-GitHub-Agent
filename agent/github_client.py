@@ -1,9 +1,3 @@
-"""Thin authenticated wrapper over the GitHub REST API.
-
-Tracks call count and elapsed time so the executor/reporter can surface
-real numbers (API calls, timing) for the execution report and the
-learning-loop comparison.
-"""
 import os
 import time
 

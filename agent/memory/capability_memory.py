@@ -1,11 +1,3 @@
-"""Capability Memory: what the agent knows how to do.
-
-Tracks every tool (base and synthesized), its success rate, and
-constraints discovered at runtime (rate limits, validation rules,
-permission boundaries). The planner reads this before planning so it can
-prefer reliable tools and pre-empt known failure modes instead of
-rediscovering them.
-"""
 import json
 
 from agent.memory.db import get_connection

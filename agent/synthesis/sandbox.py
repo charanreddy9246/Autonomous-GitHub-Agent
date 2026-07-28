@@ -1,14 +1,3 @@
-"""Runs freshly-generated tool code in an isolated subprocess before it
-is trusted enough to register into capability memory.
-
-Isolation is process-level (separate interpreter, no access to the
-parent process's objects/state, hard timeout) rather than a full
-container -- sufficient to catch syntax errors, runtime exceptions, and
-bad API usage without letting generated code corrupt the running agent.
-The subprocess still makes a REAL call against the configured GitHub
-repo (per the assignment's "no mocks" constraint), so a passing test
-means the capability genuinely works.
-"""
 import json
 import os
 import subprocess

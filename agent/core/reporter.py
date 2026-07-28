@@ -1,8 +1,3 @@
-"""Builds the structured execution report required after every run:
-what was done, what failed, why, and what the agent decided to do about
-it -- plus the cost numbers the self-learning loop is measured on."""
-
-
 def build_report(
     instruction: str,
     outcome: str,

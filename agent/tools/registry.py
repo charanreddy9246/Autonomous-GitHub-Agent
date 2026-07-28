@@ -1,12 +1,3 @@
-"""Merges the hardcoded base tools with synthesized tools loaded from
-capability memory at startup, and any tools synthesized during the
-current session. All tools share one calling convention:
-
-    fn(args: dict, client: GitHubClient) -> dict | list
-
-so synthesized tools reuse the same GitHub auth and API-call counting as
-base tools.
-"""
 from agent.memory import capability_memory
 from agent.tools.github_base import BASE_TOOLS, TOOL_SPECS as BASE_SPECS
 

@@ -1,20 +1,3 @@
-"""Executes a planned sequence of steps against the live registry/client.
-
-Failure handling policy (explicit, not silent):
-- A step that fails and is NOT marked "critical" is recorded as failed and
-  execution continues with the remaining steps.
-- A step that fails and IS marked "critical" triggers exactly one
-  replan-after-failure call (the planner gets the concrete error and
-  revises the remaining plan, e.g. inserting a corrective step). If the
-  retry after replanning also fails, all remaining critical-dependent
-  steps are marked "skipped" with a clear reason -- the run is reported
-  as "partial", never silently reported as a clean success.
-- A "__missing__" tool step triggers runtime capability synthesis. If
-  synthesis succeeds, the real result from its sandbox test IS the
-  step's result (avoids performing the same side-effecting action twice).
-  If synthesis fails after N attempts, the step is marked failed with the
-  full attempt log.
-"""
 import re
 import time
 

@@ -1,11 +1,3 @@
-"""Execution Memory: what the agent has done before.
-
-Stores every run's instruction, decomposition, per-step outcomes, and
-cost (API calls / LLM calls / time). Provides similarity lookup so the
-planner can find the closest past instruction and reuse its plan instead
-of reasoning from scratch -- this is the mechanism behind the
-self-learning loop's measurable improvement.
-"""
 import json
 import sqlite3
 from dataclasses import dataclass

@@ -1,7 +1,3 @@
-"""Turns the raw step results (GitHub API JSON blobs) into one plain-English
-answer to the original instruction. Without this, the report only shows
-what tools ran and the raw data they fetched -- never an actual readable
-answer to what was asked."""
 import json
 import os
 
