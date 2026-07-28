@@ -18,7 +18,7 @@ def run_instruction(instruction: str) -> dict:
     init_db()
     registry = ToolRegistry()
     client = GitHubClient()
-    planner = Planner()
+    planner = Planner() #to start the AI
 
     tool_specs = registry.specs_for_planner()
     steps, embedding, reused_from = planner.plan(instruction, tool_specs)

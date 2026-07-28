@@ -2,47 +2,106 @@
 
 **Target Repository:** `charanreddy9246/Demorepo` (a real GitHub repository with live API calls).
 
-Right now, this repository has 3 real open issues without any labels:
-- `backend problem` (#1)
-- `login page error` (#2)
-- `execution memery issues` (#3)
-
 You can test any instruction in the terminal by running:
 ```bash
 python -m agent.cli "<your instruction here>"
 ```
 
-Here are the 3 test instructions we use during our live walkthrough to prove the system works:
+Here is the exact terminal output from our live presentation proving the 3 core features of the architecture (Base Tools, Tool Synthesis, and Memory Reuse).
 
 ---
 
-## 1. Baseline Test (Base Tools)
-**Command:**
+## 1. Baseline Test (Using Base Tools)
+
+**Instruction:**
 ```bash
-python -m agent.cli "How many open issues currently have no labels at all?"
+python -m agent.cli "list all the avaibel issues"
 ```
-- **What happens:** Our agent uses its hardcoded `list_issues` tool to check the repository. Since it already knows how to check for labels, it executes cleanly without needing to invent new tools.
-- **Result:** Finished in **3.0 seconds** using only **2 API calls**. It accurately reports: *"There are currently 3 open issues that have no labels at all."*
+
+**What happens:** The agent uses its hardcoded `list_issues` tool to check the repository and retrieves all current open and closed issues. It passes the raw JSON data to the Planner LLM, which summarizes the active issues in a clean, human-readable format.
+
+**Live Output:**
+```
+======================================================================
+INSTRUCTION: list all the avaibel issues
+OUTCOME: SUCCESS
+1 step(s) succeeded, 0 failed, 0 skipped.
+----------------------------------------------------------------------
+ANSWER:
+There are four issues listed:
+
+1. **Issue 1** - Title: "backend problem" (State: open) - This is affecting the production API and needs urgent attention.
+2. **Issue 2** - Title: "error in login page" (State: open) - Users are unable to log in due to an error on the login page. (Label: bug)
+3. **Issue 3** - Title: "memory issue" (State: open) - Memory usage increases during execution, causing performance problems.
+4. **Issue 4** - Title: "token-verification (safe to close)" (State: closed) - There are no details provided.
+
+The issues that are currently open are issues 1, 2, and 3.
+----------------------------------------------------------------------
+  [OK] list_issues args={'state': 'all'}
+           result: [{'number': 4, 'title': 'token-verification (safe to close)', 'state': 'closed', ...
+----------------------------------------------------------------------
+COST: 1 API calls | 2 LLM calls | 1.95s
+======================================================================
+```
 
 ---
 
 ## 2. Live Capability Synthesis (Inventing New Tools on the Fly)
-**Command:**
+
+**Instruction:**
 ```bash
-python -m agent.cli "Find all open issues that mention 'login' or 'backend' in the title, and summarize what's broken based on those issues."
+python -m agent.cli "Close issue number #3."
 ```
-- **What happens:** Notice that we do not own a tool to filter issues by keyword or summarize text! Our Planner detects this gap and marks them as `__missing__` tools. Our Synthesizer dynamically writes Python code at runtime, launches an isolated background subprocess to safely test the code against our live GitHub repo, and permanently saves the new tools into our SQLite database!
-- **Result:** Finished in **13.4 seconds** after writing and verifying two brand new tools. It accurately catches both real issues (`login page error` and `backend problem`) and prints a clean summary from real data!
+
+**What happens:** Notice that the agent does not possess a tool to close an issue by default! The Planner detects this missing capability and generates a work order. The Synthesizer dynamically writes Python code at runtime to interact with the GitHub API's closure endpoint, safely verifies the code in an isolated Sandbox, and executes the operation.
+
+**Live Output:**
+```
+======================================================================
+INSTRUCTION: Close issue number #3.
+OUTCOME: SUCCESS
+1 step(s) succeeded, 0 failed, 0 skipped.
+----------------------------------------------------------------------
+ANSWER:
+Issue number #3 has been successfully closed. You can view it [here](https://github.com/charanreddy9246/Demorepo/issues/3). The issue was titled "memory issue" and was closed by the user `charanreddy9246`.
+----------------------------------------------------------------------
+  [OK] a_tool_that_can_close_an_issue_in_the_repository args={'issue_number': 3}
+           result: {'url': 'https://api.github.com/repos/charanreddy9246/Demorepo/issues/3', ...
+           note: capability synthesized at runtime after 1 attempt(s) and registered for reuse
+----------------------------------------------------------------------
+COST: 1 API calls | 3 LLM calls | 8.39s
+======================================================================
+```
 
 ---
 
-## 3. The Self-Learning Loop (Memory Reuse & Measurable Proof)
-**Command:**
+## 3. The Self-Learning Loop (Memory Reuse)
+
+**Instruction:**
 ```bash
-python -m agent.cli "Search the open issues for anything related to login or backend problems and give me a short summary."
+python -m agent.cli "Shut down issue #3."
 ```
-- **What happens:** Notice that I phrased this command differently than Command 2! Our agent converts this text into an embedding vector and searches our SQLite database using cosine similarity. It matches our previous run with a score of **0.80** (above our 0.75 threshold). It completely bypasses writing new code and directly reuses the tools we saved in Command 2!
-- **Measurable Learning Proof (Before vs. After):**
-  - **First Run (With Synthesis):** Took **13.4 seconds** and 4 LLM calls.
-  - **Second Run (Memory Reuse):** Took only **2.4 seconds** and 2 LLM calls!
-  - That is **11 seconds faster** and cuts our LLM calls in half! This gives concrete proof that our SQLite memory loop actively makes the agent faster and cheaper over time without anyone retraining it!
+
+**What happens:** We rephrased the instruction. The agent calculates the cosine similarity of this instruction against its SQLite database memory. It finds a match above the 0.75 threshold (matching the previous run). Instead of synthesizing new code, it loads the previously validated `close_issue` tool directly from the database, executing the operation immediately and cutting execution time dramatically!
+
+**Live Output:**
+```
+======================================================================
+INSTRUCTION: Shut down issue #3.
+OUTCOME: SUCCESS
+1 step(s) succeeded, 0 failed, 0 skipped.
+----------------------------------------------------------------------
+ANSWER:
+Issue #3, titled "memory issue," has been successfully closed. You can view the details of the closed issue at [this link](https://github.com/charanreddy9246/Demorepo/issues/3). The issue was closed by the owner, charanreddy9246, due to performance problems related to increasing memory usage.
+----------------------------------------------------------------------
+  [OK] a_tool_that_can_close_an_issue_in_the_repository args={'issue_number': 3}
+           result: {'url': 'https://api.github.com/repos/charanreddy9246/Demorepo/issues/3', ...
+----------------------------------------------------------------------
+COST: 1 API calls | 2 LLM calls | 2.17s
+======================================================================
+```
+
+### Measurable Learning Proof (Before vs. After):
+- **First Run (With Synthesis):** Took **8.39 seconds** and 3 LLM calls.
+- **Second Run (Memory Reuse):** Took only **2.17 seconds** and 2 LLM calls.
+- **Result:** The memory loop made the exact same operation **almost 4x faster** without requiring any manual retraining!
